@@ -33,7 +33,7 @@ main:
 boot:
 	# Enable keyboard interrupts. 
 	
-  	lw  $t0, RECEIVER_CONTROL	# Address of receiver controll register.
+  	la  $t0, RECEIVER_CONTROL	# Address of receiver controll register.	#Should this be la and not lw?
   	lw  $t1, 0($t0)			# Value of receiver controll register.
   	ori $t2, $t1, 2			# Set the interrupt enable bit to 1.
   	sw  $t2, 0($t0)			# Update the receiver controll register. 
@@ -296,7 +296,7 @@ job_getc_infinite_loop:
 # In this simplified system, each job is only allowed to use these five 
 # registers: $pc (program counter), $v0, $a0, $s0 and $at. Each register is 
 # four byte, hence 5*4 = 20 byte of storage is needed by each job for storing
-# the job context. 
+# the job context. 	#5 OR 6!?
 
 __job_0_context: .space 24 
 __job_1_context: .space 24
@@ -422,7 +422,11 @@ __save_running_job_context:
 	sw $v0    4($k1)	# $v0
 	
 TODO_1: # Save $a0, $a1, $s0 to the context. 
-        	
+        
+        sw $a0, 8($k1)
+        sw $a1, 12($k1)
+        sw $s0, 16($k1)
+        
 	
 	lw $a0, __at            # NOTE: $at was saved to memory when entering the kernel!
 	sw $a0, 20($k1)         # $at
@@ -431,7 +435,6 @@ TODO_1: # Save $a0, $a1, $s0 to the context.
 	
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4	
-	
 	jr	$ra
 
 #------------------------------------------------------------------------------
