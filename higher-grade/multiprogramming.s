@@ -14,6 +14,7 @@
 # Mars starts to execute at label main in the .text segment, i.e., Mars
 # Mars starts to execute in user mode.
 ###############################################################################
+#Question: What is $at used for, why don't we restore it when cheking for jid?
 
 	.globl main
 	.text
@@ -32,8 +33,7 @@ main:
 	
 boot:
 	# Enable keyboard interrupts. 
-	
-  	lw  $t0, RECEIVER_CONTROL	# Address of receiver controll register.	#Should this be la and not lw?
+  	lw  $t0, RECEIVER_CONTROL	# Address of receiver controll register.	
   	lw  $t1, 0($t0)			# Value of receiver controll register.
   	ori $t2, $t1, 2			# Set the interrupt enable bit to 1.
   	sw  $t2, 0($t0)			# Update the receiver controll register. 
@@ -688,7 +688,7 @@ __unsported_system_call:
 	syscall 
 	
 	li $v0, 1
-	move $a0, $k0	
+	move $a0, $k1	
    	syscall 
    	
    	li $v0, 4
